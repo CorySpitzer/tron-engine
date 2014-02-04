@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>csmarlboro Tron Replay</title>
+    <link rel='stylesheet' href='lib/averia_serif_libre.css'>
+    <!-- <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Averia+Serif+Libre'> -->
+    <!-- <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Averia+Libre'> -->
+    <!-- <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Anonymous+Pro'> -->
+    <link rel='stylesheet' href='replay.css'>
+    <script src='replay.js'></script>
+  </head>
+  <!-- The replay 'visualiser' is adapted from the 'Tron Game Viwer'
+       at http://tron.aichallenge.org/visualizer.php?game_id=3355177  -->
+  <body>
+    <h1>csmarlboro Tron Replay</h1>
+    <div id='simspace'><img src='lib/loading.gif' alt='Loading...'></div>
+    <div id='controls'>
+	<table id='legend'>
+		<tr>
+		        <td id="gamename" class="name"></td>
+			<td class="player1"></td>
+			<td id="name1" class="name"></td>
+			<td class="player2"></td>
+			<td id="name2" class="name"></td>
+		</tr>
+	</table>
+	<table id='playback'> <tr>
+		<td><a href="javascript:_gotostart();"
+		       ><img src='lib/start.png' alt="start"></a></td>
+		<td><a href="javascript:_backward();"
+		       ><img src='lib/backward.png' alt="backward"></a></td>
+		<td><a href="javascript:_playbackward();"
+		       ><img src='lib/playbackward.png' alt="playbackward"></a></td>
+		<td><a href="javascript:playpause();"
+		       ><img src='lib/pause.png' alt="pause"></a></td>
+		<td><a href="javascript:_playforward();"
+		       ><img src='lib/playforward.png' alt="playforward"></a></td>
+		<td><a href="javascript:_forward();"
+		       ><img src='lib/forward.png' alt="forward"></a></td>
+		<td><a href="javascript:_gotoend();"
+		       ><img src='lib/end.png' alt="end"></a></td>
+	</tr></table>
+    </div> <!-- controls -->
+    <footer>
+      <div>
+	<a class='url fn' href='http://cs.marlboro.edu'>Jim Mahoney</a>
+	 &middot; Jan 2014 &middot; adapted from the 
+	<a href="http://tron.aichallenge.org/"
+	   >U. Waterloo Winter 2010 Google AI Challenge</a>
+      </div>
+    </footer>
+  </body>
+</html>	
+

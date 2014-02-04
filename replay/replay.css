@@ -1,0 +1,399 @@
+/*
+ * replay.css
+ *
+ *  adapted from http://tron.aichallenge.org/visualizer.php?game_id=3355177 
+ *
+ * font stacks :
+ *   'Averia Serif Libre', serif;
+ *   'Averia Libre', sans-serif;
+ *   'Anonymous Pro', sans-serif;   # for fixed width (i.e. code) blocks
+ * 
+ * Jim Mahoney | cs.marlboro.edu
+ */
+
+body {
+   width: 90%; 
+   margin: 1em auto; 
+   font-family: 'Averia Serif Libre', serif;
+}
+
+#main {
+   padding: 0 1em;
+}
+
+footer {
+   border-top: 1px solid grey;
+} 
+
+footer div {
+   float:right;
+   padding: 0.5em;
+   font-size: 80%;
+}
+
+/* -------------------------------- */
+
+a         {text-decoration: underline}
+a:link    {color: #235cdc}
+a:visited {color: #235cdc}
+a:active  {color: #235cdc}
+a:hover   {color: #4c7ff4}
+
+body {
+    /* padding: 20px 0 ; */
+    /* font: 13px/18px Arial, Helvetica, sans-serif; */
+    /* text-align: center   ; */
+    color: #424242;
+    background: #e0e0e0;
+}
+#main {
+    width: 900px;   
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    background: #f6f6f6;
+}
+#header-null {
+    width: 100%;
+    padding: 0;
+    border: 0;     
+}
+#header {
+    width: 100%
+    padding: 0px;
+    background: #4c7ff4;
+    height: 140px;
+    background:url(header.gif) no-repeat;
+}
+
+#left-null {
+    width: 240px;
+    float: left;
+    padding: 0;
+    border: 0;  
+    background: #f6f6f6;     
+}
+#left {
+    padding-top: 1px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 35px;
+
+}
+#right-null {
+    width: 660px;
+    float: right;
+    padding: 0;
+    border: 0;  
+    background: #fff;  
+}
+#right {
+    padding-top: 1px;
+    padding-left: 20px;
+    padding-right: 35px;
+    padding-bottom: 35px;
+}
+#footer-null {
+    clear: both;
+    width: 100%;
+    padding: 0;
+    border: 0;     
+}
+#footer {
+    padding: 0px;
+    text-align: right;
+    color: #fff;
+    height:100px;
+    padding-right: 25px;
+    margin-top: -13px;
+    background: #4c7ff4;
+    background:url(footer.gif) no-repeat;
+}
+.noscreen { 
+    display: none
+}
+
+/* header */
+#header h1 {
+    color: #fff;
+    font-size: 180%;
+    padding-top: 45px;
+    padding-left: 40px;
+}
+#header span {
+    color: #fff;
+    font-size: 100%;
+    padding-left: 40px;
+}
+#header span a {
+    color: #fff;
+    font-size: 100%;
+    text-decoration:none;
+}
+#header span.login {
+    width: 100%;
+    text-align: right;
+    color: #fff;
+}
+#login {
+    text-align: right;
+    color: #fff;
+    padding-right: 30px;
+}
+#login a {
+    color: #fff;
+}
+
+.copyright {
+    color: #fff;
+    padding-top: 25px;
+}
+
+#right img {
+    padding:10px;
+}
+
+h2  {
+    margin-top: 35px;
+}
+#right li {
+    background:url(arrow.png) 0 45% no-repeat;
+    margin: 10px 0 10px -20px;
+    padding-left: 25px;
+    display:block;
+    list-style-type: none;
+    padding-bottom: 0.7em;
+    padding-bottom: 0.7em;
+}
+
+#left li {
+    display: block;
+    list-style-type: none;
+    margin-left: -40px;
+    padding: 10px;
+    padding-left: 35px;
+    border-left: 10px solid #ececec; 
+    text-decoration: none;
+    background: #f6f6f6;
+    border-top: 1px solid #fff;
+}
+#left ul {
+    margin-left: -20px; 
+}
+#left li a {
+    text-decoration: none;
+    color: #4b4b4b; 
+}
+
+#left li a:hover {
+    color: #272727; 
+}
+
+#left li:hover {
+    border-left: 10px solid #4c7ff4;
+}
+#left h2 {
+    color: #235cdc;
+    margin-left: 10px;
+}
+#footer a {
+    color: #fff;
+}
+
+img {
+    border:0;
+}
+
+/* leaderboard style */
+table.leaderboard {
+    width: 100%;
+    border: 1px solid #aaa;
+    text-align: center;
+    border-collapse:collapse;
+    color:#111;
+}
+table.leaderboard img {
+    margin:0 !important; padding:0 !important;
+}
+table.leaderboard td {
+    border: 1px solid #A0A0A0;
+    border-width: 1px 0;
+    margin-left: 0.2em;
+    padding: 0.2em;
+}
+table.leaderboard th {
+    font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    text-align:center;
+    background-color: #4579F0;
+    border-color: #000;
+    border-width:0 0 2px 0;
+    color: #FFF;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+table.leaderboard tr:hover td {
+    background-color: #CDD3DF;
+}
+table.leaderboard tr.odd {
+    background-color: #EDF3FE;
+}
+table.leaderboard tr.even {
+    background-color: #FFFFFF;
+}
+table.leaderboard tr.user, table.leaderboard tr.user:hover td {
+    background-color: #FFD062;
+}
+div.pagination {
+    text-align:center;
+    padding: 3px;
+    margin: 3px;
+}
+div.pagination a {
+    padding: 2px 5px 2px 5px;
+    margin: 2px;
+    border: 1px solid #A0A0A0;
+    text-decoration: none;
+    color: #111;
+}
+div.pagination a:hover, div.pagination a:active {
+    border: 1px solid #4579F0;
+    color: #1549C0;
+    background-color: #EDF3FE;
+}
+div.pagination span.current {
+    padding: 2px 5px 2px 5px;
+    margin: 2px;
+    border: 1px solid #1549C0;
+    font-weight: bold;
+    background-color: #4579F0;
+    color: #FFF;
+}
+div.pagination span.disabled {
+    padding: 2px 5px 2px 5px;
+    margin: 2px;
+    border: 1px solid #EEE;
+    color: #DDD;
+}
+
+/* profile style */
+div.divider {
+    border-bottom: 1px solid #555;
+}
+dl.userinfo img {
+    margin:0 !important; padding:0 !important;
+}
+dl.userinfo dt {
+    font-weight:bold;
+    font-size:0.95em;
+    float:left;
+    width:115px;
+    font-color: #666;
+}
+table.submissions {
+    width: 100%;
+    border: 1px solid #aaa;
+    text-align: center;
+    border-collapse:collapse;
+    color:#111;
+}
+table.submissions td {
+    border: 1px solid #A0A0A0;
+    border-width: 1px 0;
+    margin-left: 0.2em;
+    padding: 0.2em;
+}
+table.submissions th {
+    font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    text-align:center;
+    background-color: #4579F0;
+    border-color: #000;
+    border-width:0 0 2px 0;
+    color: #FFF;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+table.submissions tr:hover td {
+    background-color: #CDD3DF;
+}
+table.submissions tr.odd {
+    background-color: #EDF3FE;
+}
+table.submissions tr.even {
+    background-color: #FFFFFF;
+}
+table.submissions td.success {
+    color:#22A022;
+}
+table.submissions td.fail {
+    color:#FF2222;
+}
+table.submissions td.inprogress {
+    color:#555555;
+}
+table.submissions td.game_win {
+    color:#22A022;
+}
+table.submissions td.game_loss {
+    color:#FF2222;
+}
+table.submissions td.game_draw {
+    color:#555555;
+}
+table.submissions .error_code {
+    color:#FF5555;
+}
+
+/* Some style for code samples in tutorials */
+code {
+    margin: 1em 0;
+    padding: 0.1em 0.0em;
+    background: #666666;
+    color: #FFFFFF;
+}
+
+/* Some styles for the Javascript visualizer */
+#simspace td {
+    color:white;
+    width:18px;
+    height:18px;
+    font-size:12px;
+    font-family:monospace;
+    text-align:center;
+    vertical-align:middle;
+    margin:0px 0px 0px 0px;
+}
+
+#simspace td.empty {
+    background-color:white;
+}
+#simspace td.wall {
+    background-color:black;
+}
+#simspace td.player1 {
+    background-color:red;
+}
+#simspace td.player2 {
+    background-color:blue;
+}
+
+#controls a {
+    outline-style:none;
+}
+#controls img {
+    border:none;
+}
+
+#controls td {
+    font-size:12px;
+}
+
+#controls td.player1 {
+    width:20px;
+    height:20px;
+    background-color:red;
+}
+#controls td.player2 {
+    width:20px;
+    height:20px;
+    background-color:blue;
+}

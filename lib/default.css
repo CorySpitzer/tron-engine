@@ -1,0 +1,30 @@
+/*
+ * default.css
+ *
+ * font stacks :
+ *   'Averia Serif Libre', serif;
+ *   'Averia Libre', sans-serif;
+ *   'Anonymous Pro', sans-serif;   # for fixed width (i.e. code) blocks
+ * 
+ * Jim Mahoney | cs.marlboro.edu | MIT License
+ */
+
+body {
+   width: 90%; 
+   margin: 1em auto; 
+   font-family: 'Averia Serif Libre', serif;
+}
+
+#main {
+   padding: 0 1em;
+}
+
+footer {
+   border-top: 1px solid grey;
+} 
+
+footer div {
+   float:right;
+   padding: 0.5em;
+   font-size: 80%;
+}

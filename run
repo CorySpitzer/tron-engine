@@ -1,0 +1,32 @@
+# The tron robots can be run in various ways.
+
+# --- single game examples ---
+#
+# 1. A duel between random bots, shown in terminal animation display at five frames per second.
+#
+./engines/round.py --FPS=5 -v -B maps/empty-room.txt bots/randbot.py bots/wallbot.py
+#
+# The flags are 
+#  -v  verbose, i.e. show each move
+#  -i  interactive
+#  -B  board file
+#
+# 2. Interactive : press return to see each move
+# ./engines/round.py -v -i -B maps/empty-room.txt bots/randbot.py bots/randbot.py
+#
+# 3. Send game output to a file, for the html/javascript replay visualization tool
+#    at the url  http://csmarlboro.org/tron/replay?game_id=randexample
+# ./engines/round.py --replay=games/randexample.tron -B maps/empty-room.txt bots/randbot.py bots/randbot.py
+#
+# 4. The randlog.py bot sents debug output to logs/log.txt and to replay
+#    http://csmarlboro.org/tron/replay/replay?game_id=logexample
+# ./engines/round.py --replay=games/logexample.tron -B maps/empty-room.txt bots/randbot.py bots/randlog.py
+#
+# 5. Setting replay name as a date using environment variables
+#export gamekey=`date "+%Y-%m-%d_%H:%M:%S"`
+#./engines/round.py --replay=games/${gamekey}.tron --FPS=5 -v -B maps/empty-room.txt bots/rand.py bots/rand.py
+#
+
+
+
+
