@@ -1,7 +1,7 @@
 /*******
  * tronlib.c
  * See ./tronlib.h and testbot.c for the interface and usage.
- * Jim Mahoney | cs.marlboro.edu | Feb 2014 | MIT License
+ * Jim Mahoney | cs.marlboro.edu | Feb 9 2014 | MIT License
  *****/
 
 #include "tronlib.h"
@@ -26,116 +26,103 @@ void read_line(char* buffer, char* error_message){
   }
 }
 
-board new_board(int width, int height){
-  board b = malloc(sizeof(struct _board));
-  b->width = width;
-  b->height = height;
-  b->_me = -1;
-  b->_them = -1;
-  b->data = malloc(width*height+1);
+boardp new_board(){
+  boardp b = malloc(sizeof(struct _board));
+  b->width = b->height = b->_me.row = b->_them.row = -1;
   return b;
 }
 
-board new_board_from_stdin(){
-  /* The tron board format is e.g.
-       5 4
-       #####
-       #1 2#
-       #   #
-       #####
-     where the first line gives the width and height,
-     and the following (height) lines have (width) characters.
+void read_map(boardp b){
+  /* The bot reads the map from stdin on each turn,
+     with the width and height on the first line,
+     and the map on the following height x width lines, like this :
+        5 4               // 5 columns by 4 rows
+        #####             // row 0, column 0 to 4
+        #1 2#             // 1 is "me", 2 is "them"
+        #   #             // # is wall
+        #####
    */
   char buffer[MAX_BOARD_WIDTH+2];
-  board b;
   int width, height, status, i;
   read_line(buffer, " 'width height' input line could not be read");
   status = sscanf(buffer, "%d %d", &width, &height);
   if (status != 2){
     _fatal_error(" 'width height' not found as expected");
   }
-  b = new_board(width, height);
-  for (i=0; i<height; i++){
-    read_line(buffer, "could not read a board row");
-    memcpy(b->data + i*width, buffer, width);
-  }
-  b->data[width * height] = 0; /* make data null terminated */
-  return b;
-}
-
-void read_board_from_stdin(board b){
-  char buffer[MAX_BOARD_WIDTH+2];
-  int width, height, status, i;
-  read_line(buffer, " 'width height' input line could not be read");
-  status = sscanf(buffer, "%d %d", &width, &height);
-  if (status != 2){
-    _fatal_error(" 'width height' not found as expected");
+  if (b->width == -1){             /* 1st time: initialize board map */
+    b->map = malloc(width * height + 1);
+    b->width = width;
+    b->height = height;
+    b->map[0] = 0;                /* set to zero length string */
   }
   if (width != b->width || height != b->height){
     _fatal_error("inconsistent width or height");
   }
   for (i=0; i<height; i++){
     read_line(buffer, "could not read board row");
-    memcpy(b->data + i*width, buffer, width);
+    memcpy(b->map + i*width, buffer, width);
   }
-  b->data[width * height] = 0; /* make data null terminated */
-  b->_me = -1;                 /* clear cached values */
-  b->_them = -1;
+  b->map[width * height] = 0;     /* make map null terminated */
+  b->_me.row = b->_them.row = -1;  /* clear cached values */
 }
 
-void free_board(board b){
-  free(b->data);
+void init_map(boardp b, int width, int height){
+  if (width < 0 || height < 0){
+    _fatal_error("illegal width or height in init_map()");
+  }
+  if (b->width != -1){  /* map allocated ? */
+    free(b->map);
+  }
+  b->map = malloc(width * height + 1);
+  b->width = width;
+  b->height = height;
+  b->map[0] = 0;                /* map initilized to zero length string */
+}
+
+void free_board(boardp b){
+  if (b->width != -1){  /* map allocated ? */
+    free(b->map);
+  }
   free(b);
 }
 
-char tile(board b, int offset){
-  return b->data[offset];
+char tile(boardp b, cell c){
+  if (c.row > b->height || c.col > b->width){
+    return '?';   /* out of bounds error */
+  }
+  else {
+    return b->map[c.row + b->width * c.col];
+  }
 }
 
-int find(board b, char what){
+cell find(boardp b, char what){
   int i;
+  cell c;
+  if (b->width < 0){
+    _fatal_error("find() called on board without map");
+  }
   for (i=0; i< b->width * b->height; i++){
-    if (b->data[i] == what){
-      return i;
+    if (b->map[i] == what){
+      c.row = i / b->width;
+      c.col = i % b->width;
+      return c;
     }
   }
   _fatal_error("find() failed");
 }
 
-int me(board b){
-  int i, where;
-  if (b->_me >= 0){
-    return b->_me;
+cell me(boardp b){
+  if (b->_me.row < 0){
+    b->_me = find(b, ME);
   }
-  else {
-    where = find(b, ME);
-    b->_me = where;
-    return where;
-  }
+  return b->_me;
 }
 
-int them(board b){
-  int i, where;
-  if (b->_them >= 0){
-    return b->_them;
+cell them(boardp b){
+  if (b->_them.row < 0){
+    b->_them = find(b, THEM);
   }
-  else {
-    where = find(b, THEM);
-    b->_them = where;
-    return where;
-  }
-}
-
-int row_at(board b, int offset){
-  return offset / b->width;
-}
-
-int col_at(board b, int offset){
-  return offset % b->width;
-}
-
-int offset_at(board b, int row, int col){
-  return row * b->width + col;
+  return b->_them;
 }
 
 void commit_move(int direction){

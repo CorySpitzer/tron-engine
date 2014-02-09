@@ -1,7 +1,7 @@
 /*******
  * tronlib.h
  * See ./tronlib.c and testbot.c for implementation and usage.
- * Jim Mahoney | cs.marlboro.edu | Feb 2014 | MIT License
+ * Jim Mahoney | cs.marlboro.edu | Feb 9 2014 | MIT License
  *****/
 
 #define NORTH 1
@@ -16,31 +16,29 @@
 
 #define MAX_BOARD_WIDTH 128
 
-typedef struct _board *board;
+typedef struct _cell cell;                /* position on a board */
+struct _cell {
+  int row;                                /* vertical position,   0 is top */
+  int col;                                /* horizontal position, 0 is left */
+};
+
+typedef struct _board *boardp;            /* boardp is 'board pointer' */
 struct _board {
   int width;
   int height;
-  int _me;                                /* if >= 0, offset to ME in data */
-  int _them;                              /* if >= 0, offset to THEM in data */
-  char* data;                             /* width*height chars then NULL  */
+  cell _me;                               /* cached position if .row > 0 */
+  cell _them;
+  char* map;                              /* width*height chars then NULL  */
 };
+boardp new_board();                       /* its map is not yet allocated */
+void init_map(boardp b, int width, int height);
+void free_board(boardp b);
 
-board new_board(int width, int height);   /* data allocated but uninitialized */
-board new_board_from_stdin();             /* read in a tron map */
-void read_board_from_stdin(board b);      /* read map; modify board in place */
-void free_board(board b);
-
-int me(board b);                          /* offset to ME in data */
-int them(board b);                        /* offset to THEM in data */
-char tile(board b, int offset);
-
-int row_at(board b, int offset);          /* convert offset to row */
-int col_at(board b, int offset);          /* convert offset to col */
-int offset_at(board b, int row, int col); /* convert row,col to offset */
-
+void read_map(boardp b);                  /* modifies board in place */
+cell me(boardp b);                        /* position of ME in map */
+cell them(boardp b);                      /* position of THEM in map */
+char tile(boardp b, cell c);              /* what's on the board at position */
 void commit_move(int direction);          /* output move to referee */
-
-
 
 
 
