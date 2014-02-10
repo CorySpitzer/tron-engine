@@ -1,0 +1,16 @@
+board 'empty-room'  round 1
+  northbot randbot P2WIN
+  northbot wallbot P2WIN
+  northbot freebot P2WIN
+  northbot fail P2FAILED
+  randbot northbot P1WIN
+  randbot wallbotTraceback (most recent call last):
+  File "../../engines/tournament.py", line 185, in <module>
+    run_contest(contestants, boards, options, options.users, boardnames)
+  File "../../engines/tournament.py", line 87, in run_contest
+    options, replay=replay)
+  File "../../engines/tournament.py", line 32, in do_round
+    replay=replay)
+  File "/Users/mahoney/academics/term/2014-01-spring/programming_workshop/tron/tron-engine/engines/round.py", line 214, in run_round
+    sleep(0.1)
+KeyboardInterrupt

@@ -20,6 +20,12 @@ from time import sleep, clock
 from player import Player, PlayerFailedException, P0BOARD, P1BOARD
 from board import Board, GameBoard, BoardFile
 
+class ErrorInRound(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 # Approximate frames-per-second to run the visualization
 FPS = 30
 
@@ -130,25 +136,21 @@ def print_board(board, name1, name2, ansi=False):
             print
         print '-'*board.width
 
-def replayfile(fn):
+def get_replayfile(fn):
     if fn is None:
         return None
     if fn == '-':
         return sys.stdout
-    try:
-        return open(fn, "w")
-    except:
-        parser.error("couldn't open output file %r"%fn)
-        
+    return open(fn, 'w')
+    # except:
+    #    raise ErrorInRound("couldn't open output file {}".format(fn))
 
 def run_round(cmd1, cmd2, board, 
-              name1="Contestant 1", 
-              name2="Contestant 2", 
-              verbose=False, interactive=False, ansi=False, 
-              replay=None, **kwargs):
+              name1="Contestant 1", name2="Contestant 2", 
+              verbose=False, interactive=False, ansi=False, replay=False,
+              **kwargs):
     delay = 1.0/FPS
-    #print " DEBUG: delay=", delay
-    #wait = input("ok?")
+
     try:
         p1 = Player(cmd1, name1)
     except Exception, e:
@@ -158,15 +160,16 @@ def run_round(cmd1, cmd2, board,
         p2 = Player(cmd2, name2)
     except Exception, e:
         raise PlayerFailedException(name2, "Couldn't start process: "+str(e))
-
+    
     gameboard = GameBoard(board)
 
     if replay:
-        replay.write("+OK|{} {}|".format(gameboard.width, gameboard.height))
+        replayfile = get_replayfile(replay)
+        replayfile.write("+OK|{} {}|".format(gameboard.width, gameboard.height))
         for line in gameboard.board:
-            replay.write(''.join(line).translate(P1BOARD))
-            replay.write('\n')
-        replay.write("|{}|{}|".format(name1, name2))
+            replayfile.write(''.join(line).translate(P1BOARD))
+            replayfile.write('\n')
+        replayfile.write("|{}|{}|".format(name1, name2))
 
     result = None
     try:
@@ -180,8 +183,8 @@ def run_round(cmd1, cmd2, board,
             m2 = p2.getmove(gameboard, '2')
             result = gameboard.move(m1, m2)
             if replay:
-                replay.write('{}'.format(' NESW'[m1]))
-                replay.write('{}'.format(' NESW'[m2]))
+                replayfile.write('{}'.format(' NESW'[m1]))
+                replayfile.write('{}'.format(' NESW'[m2]))
             total_clock = clock()-start
             if verbose and total_clock < delay:
                 sleep(delay - total_clock)
@@ -216,8 +219,9 @@ def run_round(cmd1, cmd2, board,
             p2.sigkill()
 
     if replay:
-        replay.write("|{}|+OK\n".format(result))   # result is winner, '1', '2', or 'D'
-        replay.close()
+        # result is winner, '1', '2', or 'D'        
+        replayfile.write("|{}|+OK\n".format(result))   
+        replayfile.close()
 
     return result
 
@@ -225,21 +229,23 @@ if __name__ == '__main__':
     import sys
     from optparse import OptionParser
 
-    parser = OptionParser(usage="usage: %prog [options] <cmd1> <cmd2>\ncmd1 and/or cmd2 can be - to indicate a human player.")
+    parser = OptionParser(usage="usage: %prog [options] <cmd1> <cmd2>\ncmd1 " +
+                                "and/or cmd2 can be - to indicate a human player.")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
                       default=False, help="Show each move as it is played.")
     parser.add_option("-q", "--quiet", action="store_false", dest="verbose",
                       help="Print only the game summary without additional information.")
     parser.add_option("-i", "--interactive", action="store_true", dest="interactive",
                       default=False, help="Pause between moves.")
-    parser.add_option("-b", "--board", action="store", dest="board",
-                      default=None, help="Board specification (default: Board(10,10) for a 10x10 board)")
+    parser.add_option("-b", "--board", action="store", dest="board", default=None,
+                      help="Board specification (default: Board(10,10) for a 10x10 board)")
     parser.add_option("-B", "--board-file", action="store", dest="boardfile",
                       default=None, help="Board filename")
     parser.add_option("--no-color", action="store_false", dest="ansi",
                       default=True, help="Disable colour support.")
-    parser.add_option("--replay", action="store", dest="replay",
-                      default=None, help="Store data for javascript replay.html to specified filename (- for stdout)")
+    parser.add_option("--replay", action="store", dest="replay", default=None,
+                      help="Store data for javascript replay.html to specified " +
+                           "filename (- for stdout)")
     parser.add_option("--FPS", action="store", dest="FPS",
                       default=30, help="animation frames per second (default 30)")
     (options, args) = parser.parse_args()
@@ -256,8 +262,6 @@ if __name__ == '__main__':
         options.board = eval(options.board)
     elif options.boardfile:
         options.board = BoardFile(options.boardfile)
-
-        options.replay = replayfile(options.replay)
 
     if len(args) == 0:
         # Interactive mode selection.

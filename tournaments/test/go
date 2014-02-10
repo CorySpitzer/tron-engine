@@ -1,0 +1,42 @@
+# run a tournament
+#
+# name  : test
+# stats : 
+#         5 bots             => 20 pairings (n*(n-1)) ; both (a vs b) & (b vs a)
+#         7 rooms * 3 rounds => 21 games with each pairing
+#         total game = 20 * 21 = 420 len(bots)*(len(bots)-1)*rooms*rounds
+#         each robot plays 2*(len(bots)-1)*rooms*rounds = 168 games
+#
+mv result.txt old_result.txt 2>/dev/null
+../../engines/tournament.py -vv --rounds=3 --replay=../../games/test bots.txt boards.txt > result.txt 2>&1
+
+# $ time ./go
+# 
+# real	1m12.412s
+# user	0m34.673s
+# sys	0m16.867s
+# 
+# $ tail result.txt
+# ...
+# name      wins      losses    draws     nullwins  nulllosses
+# freebot   138       15        15        42        0         
+# wallbot   114       38        16        42        0         
+# randbot   97        61        10        42        0         
+# northbot  46        113       9         42        0         
+# fail      0         0         0         0         168       
+#
+# $ ls -1 ../../games/test | wc     # how many files in replay folder?
+#    420     420   13584
+#
+# $ ls ../../games/test | head      # first few files in replay folder
+# empty-room__fail__freebot__1.tron
+# empty-room__fail__freebot__2.tron
+# empty-room__fail__freebot__3.tron
+# empty-room__fail__northbot__1.tron
+# empty-room__fail__northbot__2.tron
+# empty-room__fail__northbot__3.tron
+# empty-room__fail__randbot__1.tron
+# empty-room__fail__randbot__2.tron
+# empty-room__fail__randbot__3.tron
+# empty-room__fail__wallbot__1.tron
+

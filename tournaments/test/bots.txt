@@ -1,0 +1,6 @@
+# ID, Name, Command                          test : 5 bots
+1,northbot, cd ../../bots; ./northbot.py
+2,randbot,  cd ../../bots; ./randbot.py
+3,wallbot,  cd ../../bots; ./wallbot.py
+4,freebot,  cd ../../bots; ./freebot.py
+5,fail,     cd ../../bots; ./failbot.py
