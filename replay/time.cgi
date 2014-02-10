@@ -9,5 +9,5 @@
 import datetime
 print "Content-type: text/plain"
 print
-print "The time is {}.".format(datetime.now())
+print "The time is {}.".format(datetime.datetime.now())
 
