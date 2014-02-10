@@ -1,4 +1,4 @@
-# run a tournament
+# == tournament ==
 #
 # name  : test
 # stats : 
@@ -7,9 +7,24 @@
 #         total game = 20 * 21 = 420 len(bots)*(len(bots)-1)*rooms*rounds
 #         each robot plays 2*(len(bots)-1)*rooms*rounds = 168 games
 #
-mv result.txt old_result.txt 2>/dev/null
-../../engines/tournament.py -vv --rounds=3 --replay=../../games/test bots.txt boards.txt > result.txt 2>&1
+# If you want to save the old results, uncomment this.
+#mv result.txt old_result.txt 2>/dev/null
+#
+# --- options ---
 
+#  --rounds   : number of times to run each room-bot1-bot2 triple
+#  -vv        : verbosity level (-v = summary, -vv = game results, -vvv = all moves)
+#  --replay   : directory where game replay files should be put
+#  bots.txt   : file listing paths to robots
+#  boardd.txt : file listing paths to rooms 
+#
+# Go!
+
+  ../../engines/tournament.py -vv \
+  --rounds=3 --replay=../../games/test bots.txt boards.txt > result.txt 2>&1
+
+# --- Here's what I saw. ---
+#
 # $ time ./go
 # 
 # real	1m12.412s
