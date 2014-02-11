@@ -1,2 +1,7 @@
 # executables
 bots/c/testbot
+
+# compiled code
+*.py[cod]
+*.so
+
