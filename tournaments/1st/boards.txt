@@ -1,0 +1,8 @@
+# tournament map files            test : 7 rooms
+../../maps/empty-room.txt
+../../maps/huge-room.txt
+../../maps/toronto.txt
+../../maps/u.txt
+../../maps/trix.txt
+../../maps/quadrant.txt
+../../maps/ring.txt

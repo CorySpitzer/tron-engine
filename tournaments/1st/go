@@ -1,0 +1,14 @@
+# == tournament ==
+#
+# name  : 1st
+# stats : 
+#         5 bots    => 20 pairings (n*(n-1)) ; both (a vs b) & (b vs a)
+#         7 rooms * 3 rounds => 21 games with each pairing
+#         total game = 20 * 21 = 420 len(bots)*(len(bots)-1)*rooms*rounds
+#         each robot plays 2*(len(bots)-1)*rooms*rounds = 168 games
+#
+# Go!
+
+  ../../engines/tournament.py -vv \
+  --rounds=3 --replay=../../games/test bots.txt boards.txt > result.txt 2>&1
+
