@@ -1,159 +1,110 @@
 #!/usr/bin/python
 """
 John Reese
-Feb  10, 2014
-Tronbot
+Feb  13, 2014
+Tron AI challenge
 """
 import tron
 import random
+from sys import exit
 
-ORDER = list(tron.DIRECTIONS)
-random.shuffle(ORDER)
-logfile = open('logfile.txt','r+')
-def log(message,logfile):
+logfile = open('logfile.txt','w+')
+logfile.write('-------NEW GAME--------\n')
+def log(message):
+	"""
+	logs the message string to the logfile in line 12.
+	"""
 	logfile.write(message + '\n')
 	logfile.flush()
 
+class MoveError(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
 
-def distance_apart(board): 
-	"""NOT USED
-	returns the number of blocks it would take to reach
-	the other player, provided he is stationary."""
-	return abs(board.me()[0]+board.them()[0]) + abs(board.me()[1] + board.them()[1])
-x = True
-y = False
-def which_move(board):
-	log('passible moves: ' + str(board.moves()),logfile)
-	them_y,them_x = board.them()
-	me_y,me_x = board.me()
-	log('my position = ' + str((me_y, me_x)),logfile)
-	log('their position = ' + str((them_y, them_x)),logfile)
-	y_diff = them_y - me_y
-	x_diff = them_x - me_x
-	log('x_diff = ' + str(x_diff),logfile)
-	log('y_diff = ' + str(y_diff),logfile)
-	if abs(y_diff)>abs(x_diff):
-		log('elif y_diff > x_diff',logfile)		
-		log('Is the NORTH valid and towards the opponent ?' + str(y_diff<0 and board.passable(board.rel(tron.NORTH))),logfile)
-		log('Is the SOUTH valid and towards the opponent ?' + str(y_diff>0 and board.passable(board.rel(tron.SOUTH))),logfile)
-		if y_diff<0 and board.passable(board.rel(tron.NORTH)):
-			log('y_diff<0, going NORTH',logfile)
-			# log('returning tron.NORTH',logfile)
-			return tron.NORTH
-		elif y_diff>0 and board.passable(board.rel(tron.SOUTH)):
-			log('y_diff>0, going SOUTH',logfile)
-			# log('returning tron.SOUTH',logfile)
+class Game(object):
+	def __init__(self, board):
+		self.board = board
+		self.me_x,self.me_y = board.me()
+		self.them_x,self.them_y = board.them()
+		log('created game object')
+
+
+	def try_move(self,direction):
+		log('trying move ' + str(direction) + '...')
+		if direction in self.board.moves():
+			log('move is valid. Sending move: ' + str(direction))
+			print direction
+			exit()
+		else:
+			log('move not valid, raising MoveError: ' + str(direction))
+			raise MoveError('Move not valid: ' + str(direction))
+
+	def get_closer_start(self):
+		"""This function gets ME closer to the other bot
+		It calls get_closer_vert/horiz to actually make the move
+		all moves are done through try,except so that no invalid moves shold be made."""
+		log('starting get_closer_start')
+		y_diff = self.them_y - self.me_y
+		x_diff = self.them_x - self.me_x
+		if abs(y_diff)>abs(x_diff):
+			try:
+				log('trying get_closer_vert')
+				self.try_move(self.get_closer_vert(y_diff))
+			except MoveError:
+				self.fallback()
+		elif abs(y_diff)<abs(x_diff):
+			log('trying get_closer_horiz')
+			try:
+				self.try_move(self.get_closer_horiz(y_diff))
+			except MoveError:
+				self.fallback()
+		elif abs(y_diff) == abs(x_diff):
+			log('trying to pick get_closer_vert or get_closer_horiz')
+			try:
+				self.try_move(random.choice([self.get_closer_vert(y_diff), self.get_closer_horiz(x_diff)]))
+			except MoveError:
+				self.fallback()
+				
+	def get_closer_vert(self,y_diff):
+		log('in get_closer_vert')
+		if y_diff>0:
+			log('y_diff>0, returning tron.SOUTH')
 			return tron.SOUTH
-		# elif not board.passable(board.rel(tron.NORTH)) and not board.passable(board.rel(tron.SOUTH)):
-		else:
-			# randbot(board)
-			i = 0
-			while x==True:
-				log('entering first weird while loop', logfile)
-				if board.passable((me_y,me_x+i))==True:
-					i = i + 1
-				else:
-					x=False
-			log('there are ' + i +' squares WEST',logfile)
-			j = 0
-			while y==True:
-				if board.passable((me_y,me_x-j))==True:
-					j = j + 1
-				else:
-					y=False
-			log('there are ' + j +' squares EAST',logfile)
-			if i>=j:
-				return tron.EAST
-			else:
-				return tron.WEST
+		if y_diff<0:
+			log('y_diff<0, returning tron.NORTH')
+			return tron.NORTH
 
-	elif abs(y_diff)<abs(x_diff):
-		log('elif y_diff < x_diff',logfile)
-		log('Is the EAST valid and towards the opponent? ' + str(y_diff>0 and board.passable(board.rel(tron.EAST))),logfile)
-		log('Is the WEST valid and towards the opponent? ' + str(y_diff<0 and board.passable(board.rel(tron.WEST))),logfile)
-		if x_diff>0 and board.passable(board.rel(tron.EAST)):
-			log('x_diff>0, going EAST',logfile)
+	def get_closer_horiz(self,x_diff):
+		if x_diff>0:
+			log('x_diff>0, returning tron.EAST')
 			return tron.EAST
-		elif x_diff<0 and board.passable(board.rel(tron.WEST)):
-			log('x_diff<0, going WEST',logfile)
+		if x_diff<0:
+			log('x_diff<0, returning tron.WEST')			
 			return tron.WEST
-		# elif not board.passable(board.rel(tron.EAST)) and not board.passable(board.rel(tron.WEST)):
-		else:
 
-			i = 0
-			while x == True:
-				log('entering second weird while loop', logfile)
+	def fallback(self):
+		log('trying fallback!')
+		bestcount = -1
+		bestmove = tron.NORTH
+		for dir in self.board.moves():
+			dest = self.board.rel(dir)
+			count = 0
+			for pos in self.board.adjacent(dest):
+				if self.board[pos] == tron.FLOOR:
+					count += 1
+			if count > bestcount:
+				bestcount = count
+				bestmove = dir
+		print bestmove
+		exit()
 
-				if board.passable((me_y+i,me_x))==True:
-					i = i + 1
-				else:
-					x = False
-			log('there are ' + i +' squares NORTH',logfile)
-			j = 0
-			while y == True:
-				if board.passable((me_y-j,me_x))==True:
-					j = j + 1
-				else:
-					y = False
-			log('there are ' + i +' squares SOUTH',logfile)
-			if i>=j:
-				log('moving NORTH'.logfile)
-				return tron.NORTH
-			else:
-				log('moving SOUTH',logfile)
-				tron.SOUTH
-	elif y_diff == x_diff:
-		return wallbot(board)
-		# return randbot(board)
-		# return random.choice(board.moves())
-def randbot(board):
-	log('randomtime', logfile)
-	choices = board.moves()
-	log(str(choices),logfile)
-	return choices[0]
-
-def wallbot(board):
-
-    decision = board.moves()[0]
-
-    for dir in ORDER:
-
-        # where we will end up if we move this way
-        dest = board.rel(dir)
-
-        # destination is passable?
-        if not board.passable(dest):
-            continue
-
-        # positions adjacent to the destination
-        adj = board.adjacent(dest)
-
-        # if any wall adjacent to the destination
-        if any(board[pos] == tron.WALL for pos in adj):
-            decision = dir
-            break
-    log(str(decision),logfile)
-    return decision
-
-def flood_fill(board, ypos, xpos): 
-	"""NOT DONE"""
-	boardlist = board.board.split('\n')
-	for row in range(len(boardlist)):
-		boardlist[row] = list(boardlist[row])
-	boardlist[ypos][xpos] = '0'
-	# for direction in board.moves():
-	if board.passable(board.adjacent((ypos,xpos))[0]) == tron.FLOOR: # up
-		flood_fill(board, ypos+1, xpos)
-
-	if board.passable(board.adjacent((ypos,xpos))[1]) == tron.FLOOR: # right
-		flood_fill(board, ypos, xpos+1)
-
-	if board.passable(board.adjacent((ypos,xpos))[2]) ==tron.FLOOR: # down
-		flood_fill(board, ypos-1, xpos)
-
-	if board.passable(board.adjacent((ypos,xpos))[3]) == tron.FLOOR: # left
-		flood_fill(board, ypos, xpos-1)
-
+def which_move(board):
+	log('in which_move()')
+	game = Game(board)
+	game.get_closer_start()
+	fallback()
 
 for board in tron.Board.generate():
 	tron.move(which_move(board))
