@@ -1,2 +1,14 @@
 # executables
 bots/c/testbot
+
+# compiled code
+*.py[cod]
+*.so
+
+##########
+# See https://help.github.com/articles/ignoring-files
+# and gitignore.io .
+# In particular, to un-track a file which was added
+# before it was ignored, do this :
+#   $ git rm --cached filename
+########
