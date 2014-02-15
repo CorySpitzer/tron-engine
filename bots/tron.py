@@ -24,7 +24,74 @@ tron.py
 
  Jim Mahoney, Marlboro College | GPL | Feb 10 2010 ; modified Jan 2014
 """
-import sys, os
+import sys, os, datetime
+
+# --- start debugging stuff ---------------------------------------------
+
+## To set up your bot for debugging :
+##
+##   1. From the command line, create a logfile in a world-writable folder,
+##      and make that file writeable by anyone.
+##      On csmarlboro.org, I've set up /var/www/csmarlboro/tron/logs
+##      to be a good place; create a file with your username there.
+##      (Change 'you' to your username, so only your bot's messages go there.)
+##
+##        $ touch /var/www/csmarlboro/tron/logs/you.txt      # Create it.
+##        $ chmod o+w /var/www/csmarlboro/tron/logs/you.txt  # Set permissions.
+##
+##   2. In your robot.py file, send all errors and warn() output
+##      to that file. (Note that this means you'll need to look there
+##      to see errors, even when running it yourself.)
+##      Use a an absolute path (starting with /) so that the file
+##      wil have the same name no matter what folder the bot is run from.
+##
+##        import tron
+##        tron.init_logfile('/var/www/csmarlboro/tron/logs/you.txt')
+##
+##   3. For debugging print statements, use the "warn" function "
+##      in your robot.py file. For example if you want to
+##      log the value of variable foo in some function bar :
+##
+##        tron.warn(' in function bar, foo={}'.format(foo))
+##
+##   4. Run your bot, either manually from the command line,
+##      or with the terminal "run" script, or in a tournament.
+##      Then each game will append to the logfile, starting
+##      with a line like "=== starting bot at ... ==="
+##
+##   5. Look in that file to see what happened. From the command line
+##
+##        $ tail /var/www/csmarlboro/tron/logs/you.txt
+##
+##      or
+##
+##        $ less /home/user/tron_logfile.txt
+##
+## See logbot.py for an example.
+##
+## Questions? Ask someone.
+##
+
+def warn(message):
+    """ Send a warning message to stderr.
+        This works well with the logfile set with init_logfile(path) """
+    # Note that message is a string, so use " ... {} ".format() or str()
+    # to convert variables to strings, i.e.  warn("a={}".format(a))
+    sys.stderr.write(message + "\n")
+
+def init_error_log(logfilename):
+    """ send stderr to a logfile, which will then have
+        errors and warn(messages) appended to it. """
+    # USE A FULL PATH, i.e. /home/yourusername/tron_logfile.txt 
+    # so that this will work no matter which folder the bot is run from, and
+    # MAKE SURE THAT FILE IS WRITABLE, i.e.
+    #    $ touch /home/yourusername/tron_logfile.txt  # Create it if need be.
+    #    $ chmod o+w                                  # Make world writable.
+    # from google "stderr to file" 
+    sys.stderr = open(logfilename, "a")  # set stderr to file for appending
+    warn("=== starting bot at {} ===".format(datetime.datetime.now().ctime()))
+
+# --- end debugging stuff ------------------------------------------------
 
 NORTH = 1
 EAST  = 2
@@ -37,6 +104,7 @@ ME    = '1'
 THEM  = '2'
 
 DIRECTIONS = (NORTH, EAST, SOUTH, WEST)
+
 
 def direction(which):
     """ Return a string (e.g. 'north') from a direction number (e.g. 1) """

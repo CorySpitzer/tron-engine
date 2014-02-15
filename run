@@ -4,7 +4,7 @@
 #
 # 1. A duel between random bots, shown in terminal animation display at five frames per second.
 #
-./engines/round.py --FPS=5 -v -B maps/empty-room.txt bots/randbot.py bots/wallbot.py
+./engines/round.py --FPS=5 -v -B maps/empty-room.txt bots/logbot.py bots/wallbot.py
 #
 # The flags are 
 #  -v  verbose, i.e. show each move
