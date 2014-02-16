@@ -91,6 +91,9 @@ move to the referee. See those file for the specifics - they're all a
 bit different depending on the language style and preferences of the
 authors.
 
+In particular, see the documentation in the [tron.py](bots/tron.py) 
+library and the bots/*.py example robots that use it.
+
 The format that the referee uses to send the map to the bot 
 is the same on each turn, and and is also the same as the 
 files in the maps/ folder. For example, maps/ring.txt looks like
@@ -151,7 +154,7 @@ is read on stdin by each bot on every turn.
 About
 -----
 
-The Programming Workshop course at Marlboro College
+The [Programming Workshop course at Marlboro College](http://cs.marlboro.edu/courses/spring2014/workshop/home)
 is using this as a group exercise.
 
 Questions? Ask Jim.
