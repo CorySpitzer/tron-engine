@@ -8,10 +8,40 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-void _fatal_error(char* error_message){
-    printf("FATAL ERROR: %s \n", error_message);
-    exit(1);
+int stderror_to_logfile = 0;
+
+void _warn_no_newline(const char* message){
+  /* output message to stderr */
+  fprintf(stderr, "%s", message);
+}
+
+void warn(const char* message){
+  _warn_no_newline(message);
+  _warn_no_newline("\n");
+}
+
+void init_error_log(const char* filename){
+  time_t timedata;
+  struct tm *timeinfo;
+  //char buffer[128];
+  timedata = time(NULL);                /* get current time */
+  timeinfo = localtime(&timedata);      /* convert to local time format */
+  freopen(filename, "a", stderr);
+  _warn_no_newline("=== starting C bot at ");
+  _warn_no_newline(asctime(timeinfo));
+  stderror_to_logfile = 1;
+}
+
+void _fatal_error(const char* error_message){
+  /* send message + \n to stdout (and stderr if its to a log), and quit. */
+  printf("FATAL ERROR: %s \n", error_message);
+  if (stderror_to_logfile){
+    _warn_no_newline("FATAL ERROR: ");
+    warn(error_message);
+  }
+  exit(1);
 }
 
 void read_line(char* buffer, char* error_message){
@@ -91,7 +121,10 @@ char tile(boardp b, cell c){
     return '?';   /* out of bounds error */
   }
   else {
-    return b->map[c.row + b->width * c.col];
+    // b->map is a 1D array of a 2D board,
+    // stored row by row, i.e. width*height chars in this order (row,col) order:
+    // (0,0) (0,1) ... (0,width-1) (1,0) (1,1) ... (height-1,width-1)
+    return b->map[(c.row * b->width) + c.col];
   }
 }
 

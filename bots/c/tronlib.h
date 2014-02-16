@@ -34,14 +34,12 @@ boardp new_board();                       /* its map is not yet allocated */
 void init_map(boardp b, int width, int height);
 void free_board(boardp b);
 
-void read_map(boardp b);                  /* modifies board in place */
-cell me(boardp b);                        /* position of ME in map */
-cell them(boardp b);                      /* position of THEM in map */
-char tile(boardp b, cell c);              /* what's on the board at position */
-void commit_move(int direction);          /* output move to referee */
+void read_map(boardp b);                  /* Modify board in place. */
+cell me(boardp b);                        /* Position of ME in map. */
+cell them(boardp b);                      /* Position of THEM in map. */
+char tile(boardp b, cell c);              /* Char on board at location. */
+void commit_move(int direction);          /* Output move to referee. */
 
-
-
-
-
-
+void warn(const char* message);           /* Send debug output to stderr. */
+void init_error_log(const char* filename);/* Append stderr to filename and */
+                                          /* write 1st timestamp line to it. */
