@@ -43,7 +43,8 @@ import sys, os, datetime
 ##      to that file. (Note that this means you'll need to look there
 ##      to see errors, even when running it yourself.)
 ##      Use a an absolute path (starting with /) so that the file
-##      wil have the same name no matter what folder the bot is run from.
+##      will have the same name no matter what folder the bot is run from.
+##      Use your username for "you" in what's below.
 ##
 ##        import tron
 ##        tron.init_logfile('/var/www/csmarlboro/tron/logs/you.txt')
@@ -82,14 +83,17 @@ def warn(message):
 def init_error_log(logfilename):
     """ send stderr to a logfile, which will then have
         errors and warn(messages) appended to it. """
-    # USE A FULL PATH, i.e. /home/yourusername/tron_logfile.txt 
+    # USE A FULL PATH, i.e. /var/www/csmarlboro/tron/logs/you.txt
     # so that this will work no matter which folder the bot is run from, and
     # MAKE SURE THAT FILE IS WRITABLE, i.e.
-    #    $ touch /home/yourusername/tron_logfile.txt  # Create it if need be.
-    #    $ chmod o+w                                  # Make world writable.
-    # from google "stderr to file" 
-    sys.stderr = open(logfilename, "a")  # set stderr to file for appending
-    warn("=== starting bot at {} ===".format(datetime.datetime.now().ctime()))
+    #    $ export logfile=/var/www/csmarlboro/tron/logs/you.txt
+    #    $ touch $logfile         # Create it if need be,
+    #    $ chmod o+w $logfile     # and make it world writable.
+    # 
+    # Adapted from pages given by googling "python stderr to file" 
+    sys.stderr = open(logfilename, "a")  # set stderr to file and append to it
+    warn("=== starting python bot at {} ===".format(
+        datetime.datetime.now().ctime()))
 
 # --- end debugging stuff ------------------------------------------------
 

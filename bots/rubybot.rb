@@ -16,6 +16,43 @@
 # Jim Mahoney | cs.marlboro.edu | Feb 2014
 ###################################################
 
+# --- debugging -----------------------
+
+# Use warn(message) to send debug information to stderr.
+# since stout is used to communicate with the referee.
+# (Don't use puts, print, or p.)
+
+# Since the bot may be run from different directories,
+# your logfilename should be an absolute path, 
+# i.e. /var/www/csmarlboro/tron/logs/you.txt
+# 
+# The logfile must be writeable by the referee, 
+# so it's a good idea to make sure it exists with the 
+# correct privileges. From the command line, for example,
+# on csmarlboro.org
+#
+#     $ export logfile=/var/www/csmarlboro/tron/logs/you.txt
+#     $ touch $logfile        # Create it if need be,
+#     $ chmod o+w $logfile    # make it world writeable
+#
+# where you.txt is your_username.txt. (Anyone can write to that folder.)
+
+# Initialize a logfile, i.e.
+# open it so that stderr and warn() will be appended,
+# and write a timestamp line to it.
+def init_error_log(logfilename)
+  $stderr.reopen(logfilename, 'a')
+  warn("=== starting ruby bot at #{Time.new.asctime} ===")
+end
+
+## To send errors and warnings to a log file,
+## modify the name of the logfile appropriately (see above)
+## and uncomment the next line.
+##
+#init_error_log('/var/www/csmarlboro/tron/logs/you.txt')
+
+# ----------------------------------------------------
+
 # Directions
 NORTH = 1
 EAST  = 2
@@ -44,6 +81,10 @@ DIRECTIONS = [NORTH, EAST,  SOUTH, WEST]
 #  Loop over DIRECTIONS instead.)
 OFFSETS = [nil, [-1,0], [0,1], [1,0], [0,-1]]
 
+def direction_name(number)
+  return {NORTH=>'north', EAST=>'east', SOUTH=>'south', WEST=>'west'}[number]
+end
+
 # Output a move to the game referee.
 def commit_move(direction)
   # Direction is an integer 1 to 4, i.e. NORTH, EAST, SOUTH, WEST
@@ -70,8 +111,11 @@ end
 class Array
   # Return one random element from an array.
   def random_choice
-    self[rand(self.size)]
+    return self[rand(self.size)]
   end
+  def to_string
+    return '[' + self.join(',') + ']'
+  end 
 end
 
 # The Map class gets the Tron map from the game engine
@@ -88,15 +132,15 @@ class Map
     read_map
   end	
 
-  # Return true if location [y,x] is not within the map boundary.
-  def off_map?(location)
+  # Return true if location [y,x] is within the map boundary.
+  def on_map?(location)
     y,x = location
     return (y >= 0 and y < @height and x >= 0 and x < @width)
   end 
 
   # Return tile (i.e. ' ', '#', '1', or '2') at a location y,x
   def tile(location)
-    if off_map?(location)
+    if not on_map?(location)
       return WALL
     else
       y,x = location
@@ -138,6 +182,8 @@ class Map
     if origin == :me then origin = me end
     location = origin.dup
     2.times {|i| location[i] += OFFSETS[direction][i]}
+    #warn " destination: dir=#{direction_name(direction)} " + \
+    #     "origin=#{origin.to_string} location=#{location.to_string}"
     return location
   end
 
@@ -150,38 +196,34 @@ class Map
     return DIRECTIONS.select {|d| not wall?(destination(d))}
   end
 
-  # Return a string representation of the map.
+  # Return the map as a string, 
+  # which is essentially the text sent by the referee e.g.
+  # #####
+  # #1 2#
+  # #   #
+  # #####
   def to_string()
-    result = ""
-    @height.times {|y| result += @tiles[y .. (y+@width-1)] + "\n"}
-    return out
+    return (1..@height).map {|y| @tiles[(y-1)*@width .. y*@width-1]}.join("\n")
   end
 
   # Get a map from the referee via stdin
   def read_map
     begin
       # read the width and height from the first line
-      firstline = $stdin.readline("\n").chomp
-      width, height = firstline.split(" ")
+      firstline = $stdin.readline.chomp
+      width, height = firstline.split(' ')
       @width = width.to_i
       @height = height.to_i
-
-      ## debugging
-      # warn " ** map 1st line: " + 
-      #  "line='#{firstline}' width='#{@width}', height='#{@width}'"
 			
       # check for properly formatted width, height
-      if @height == 0 or @width == 0
+      if @height <= 0 or @width <= 0
 	warn "OOPS!: invalid map dimensions in line '#{firstline}'."
 	exit(1)
       end
       
-      # read the rest of the board into @tiles, removing newlines.
-      lines = []
-      @height.times do
-	       lines += [$stdin.readline("\n").strip]
-	     end
-      @tiles = lines.join("")
+      # read the rest of the board into @tiles
+      @tiles = ''
+      @height.times { @tiles += $stdin.readline[0 .. @width-1] }
 
     rescue EOFError => error
       # Got EOF: tournament is finished.
@@ -206,28 +248,33 @@ class TronBot
   #
   # *** Change this method to define your bot's behavior. ***
   #
+  # This version returns a random legal move.
   def which_move(map)
-    # This robot returns a random legal move.
+
+    ## sample debug output - this one prints the map
+    # warn(" map = \n" + map.to_string)
+
     valid_moves = map.moves
     if valid_moves.size == 0
       return NORTH
     else
       return valid_moves.random_choice
     end
+
   end
 
-  # Play a game. 
+  ## Play a game. 
   def run
     while(true)
-      map = Map.new()           # get a map from the referee (via stdin)
-      move = which_move(map)    # decide what to do
-      commit_move(move)         # send the move to the referee (via stdout)
+      map = Map.new()           # Get a map from the referee (via stdin),
+      move = which_move(map)    # decide what to do, and 
+      commit_move(move)         # send the move to the referee (via stdout).
     end
   end
 
 end
 
-# Let 'er rip!
+## Let 'er rip!
 TronBot.new.run
 
 # ----------------------------------------------------------------------

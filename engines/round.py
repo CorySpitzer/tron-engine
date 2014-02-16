@@ -172,6 +172,8 @@ def run_round(cmd1, cmd2, board,
         replayfile.write("|{}|{}|".format(name1, name2))
 
     result = None
+    exception1 = None
+    exception2 = None
     try:
         while True:
             if verbose:
@@ -179,8 +181,8 @@ def run_round(cmd1, cmd2, board,
             if interactive:
                 raw_input("Press <enter> to continue with the next move.")
             start = clock()
-            m1 = p1.getmove(gameboard, '1')
-            m2 = p2.getmove(gameboard, '2')
+            m1 = p1.getmove(gameboard, '1')    # may set exception1
+            m2 = p2.getmove(gameboard, '2')    # may set exception2
             result = gameboard.move(m1, m2)
             if replay:
                 replayfile.write('{}'.format(' NESW'[m1]))
@@ -189,39 +191,59 @@ def run_round(cmd1, cmd2, board,
             if verbose and total_clock < delay:
                 sleep(delay - total_clock)
             delay *= 1 - FPS_SPEEDUP
-            if result is not None:
+            # finished with game ?
+            if result != None:
                 break
     except PlayerFailedException, e:
-        raise
-    finally:
-        if verbose:
-            if result == '1':
-                print_board(gameboard, name1+' (Winner)', name2, ansi)
-            elif result == '2':
-                print_board(gameboard, name1, name2+' (Winner)', ansi)
-            else:
-                print_board(gameboard, name1+' (Draw)', name2+' (Draw)', ansi)
+        if str(e)[0:5] == 'bot 1':
+            exception1 = e
+        elif str(e)[0:5] == 'bot 2':
+            exception2 = e
+        else:
+            raise Exception("UNEXPECTED : e[0:5] != 'bot n' : " + str(e))
 
-        try:    p1.send_eof()
-        except: pass
+    if exception1 != None and exception2 != None:
+        result = 'D'  # both crashed , so game over : draw
+    elif exception1 != None:
+        result = '2'  # player 1 crashed , so game over : 2 wins
+    elif exception2 != None:
+        result = '1'  # player 2 crashed , so game over : 1 wins
+        
+    if verbose:
+        if result == '1':
+            print_board(gameboard, name1+' (Winner)', name2, ansi)
+        elif result == '2':
+            print_board(gameboard, name1, name2+' (Winner)', ansi)
+        else:
+            print_board(gameboard, name1+' (Draw)', name2+' (Draw)', ansi)
 
-        try:    p2.send_eof()
-        except: pass
+    try:    p1.send_eof()
+    except: pass
 
-        if verbose:
-            # Sleep another little while to keep the game board on-screen.
-            sleep(0.5)
-        sleep(0.1)
-        if p1.sigterm() or p2.sigterm():
-            # one of the processes wasn't quit yet
-            sleep(0.25)
-            p1.sigkill()
-            p2.sigkill()
+    try:    p2.send_eof()
+    except: pass
+
+    if verbose:
+        # Sleep another little while to keep the game board on-screen.
+        sleep(0.5)
+    sleep(0.1)
+    if p1.sigterm() or p2.sigterm():
+        # one of the processes wasn't quit yet
+        sleep(0.25)
+        p1.sigkill()
+        p2.sigkill()
 
     if replay:
         # result is winner, '1', '2', or 'D'        
         replayfile.write("|{}|+OK\n".format(result))   
         replayfile.close()
+
+    if exception1:
+        print "player1 crashed:"
+        print exception1
+    if exception2:
+        print "player2 crashed:"        
+        print exception2
 
     return result
 

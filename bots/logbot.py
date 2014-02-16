@@ -10,9 +10,9 @@ logbot.py
  Jim M | cs.marlboro.edu | Feb 2014 
 
 """
-import random, tron
+import random, tron, time
 
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     #      On csmarlboro.org, change 'everyone' to your username.
@@ -34,11 +34,15 @@ def which_move(board):
     debug(' legal moves are' + str(choices))
     move = random.choice(choices)
     debug(' chosen move is ' + str(move))
-    
-    if random.randint(1,10) == 3: a = 1/0    # sometimes do something bad.
-                                             # (This error will be in the log.)
+
+    ## test: take longer than the 1 sec allowd.
+    # time.sleep(2)
+
+    ## test: occasionaly crash (divide by zero error)        
+    # if random.randint(1,10) == 3: a = 1/0
+
     return move
 
-# Your probably don't need to change this part.
+# You probably don't need to change this part.
 for board in tron.Board.generate():
     tron.move(which_move(board))

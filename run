@@ -2,14 +2,18 @@
 
 # --- single game examples ---
 #
-# 1. A duel between random bots, shown in terminal animation display at five frames per second.
-#
+# 1. A duel between two bots
+#    shown in terminal animation display at five frames per second.
+
 ./engines/round.py --FPS=5 -v -B maps/empty-room.txt bots/logbot.py bots/wallbot.py
-#
+
 # The flags are 
 #  -v  verbose, i.e. show each move
 #  -i  interactive
 #  -B  board file
+# 
+# 1b. ditto, but with the ruby bot.
+# ./engines/round.py --FPS=5 -v -B maps/empty-room.txt bots/rubybot.rb bots/wallbot.py
 #
 # 2. Interactive : press return to see each move
 # ./engines/round.py -v -i -B maps/empty-room.txt bots/randbot.py bots/randbot.py
