@@ -1,7 +1,9 @@
 /*******
- * tronlib.c
+ * sams_tronlib.c
  * See ./tronlib.h and testbot.c for the interface and usage.
  * Jim Mahoney | cs.marlboro.edu | Feb 9 2014 | MIT License
+ * 
+ * edited as neccesary by sam judson
  *****/
 
 #include "sams_tronlib.h"
@@ -129,6 +131,8 @@ void commit_move(int direction){
   printf("%i\n", direction);
   fflush(stdout);
 }
+
+/* sam's additions: */
 
 int distance_between_cells(cell x, cell y) {
   return abs(x.row - y.row) + abs(x.col - y.col);
