@@ -1,0 +1,7 @@
+# ID, Name, Command                          1st : 5 bots
+1,felix, cd ../../bots; ./tronbotjarrar.py
+2,ryan,  cd ../../bots; ./ryan_fill2.py
+3,jacob, cd ../../bots; ./jacobbot
+4,randbot,  cd ../../bots; ./randbot.py
+5,freebot,  cd ../../bots; ./freebot.py
+

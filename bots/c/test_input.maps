@@ -1,0 +1,12 @@
+5 4        initial position
+#####
+#1 2#
+#   #
+#####
+5 4        after first move (both move south)
+#####
+## ##
+#1 2#
+#####
+.          exit with error here when sizes not found
+

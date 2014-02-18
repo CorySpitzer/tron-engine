@@ -5,7 +5,7 @@
  Robert Xiao, Jan 31 2010 
  minor edits by Jim Mahoney, Jan 2014
 """
-import signal, os, sys, string
+import signal, os, sys, string, tempfile
 from time import clock
 from subprocess import Popen, PIPE
 
@@ -57,9 +57,9 @@ def reset_alarm(old_alarm):
             raise TimeoutException("Time limit exceeded.")
 
 class PlayerFailedException(Exception):
-    def __init__(self, player, msg):
-        Exception.__init__(self, player+" failed: "+str(msg))
-        self.player = player
+    def __init__(self, player_symbol, player_name, msg):
+        self.player = "bot {} {}".format(player_symbol, player_name)
+        Exception.__init__(self, "{} failed: {}".format(self.player, msg))
 
 """ http://code.activestate.com/recipes/134892/ """
 class _Getch:
@@ -109,7 +109,9 @@ class Player(object):
                 self.get_input = raw_input
         else:
             self.interactive = False
-            self.process = Popen(cmd, shell=use_shell, stdin=PIPE, stdout=PIPE)
+            self.stderr = tempfile.TemporaryFile()
+            self.process = Popen(cmd, shell=use_shell,
+                                 stdin=PIPE, stdout=PIPE, stderr=self.stderr)
         self.name = name
 
     def readchar(self):
@@ -151,10 +153,15 @@ class Player(object):
                 old_alarm = set_alarm(timeout=1)
                 ret = self.readchar()
                 reset_alarm(old_alarm)
-            assert ret in '1234', "Player made an invalid move."
+            assert ret in '1234', \
+                "Player made an invalid move '{}'".format(ret)
+            assert ret != '', "Player made blank move ''."
             return int(ret)
         except Exception, e:
-            raise PlayerFailedException(self.name, e)
+            self.stderr.seek(0)
+            stderr_text = "\n------ {} stderr ------\n".format(self.name) + \
+              self.stderr.read() + "\n"
+            raise PlayerFailedException(player, self.name, str(e) + stderr_text)
 
     def send_signal(self, sig):
         if self.process.poll() is None:
