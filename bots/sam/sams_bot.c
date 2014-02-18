@@ -25,7 +25,7 @@ considerable assistance from jim mahoney
 #define F 0
 
 /* logging */
-#define LOGFILE "logs/sams_bot.log"
+#define LOGFILE "sams_bot.log"
 #define LOGGING 1
 
 FILE* log_file = NULL;
