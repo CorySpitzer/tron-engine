@@ -2,6 +2,8 @@
  * tronlib.h
  * See ./tronlib.c and testbot.c for implementation and usage.
  * Jim Mahoney | cs.marlboro.edu | Feb 9 2014 | MIT License
+ * 
+ * edited as neccesary by sam judson
  *****/
 
 #define NORTH 1
@@ -16,6 +18,7 @@
 
 #define MAX_BOARD_WIDTH 128
 
+/* directions and distance are sam's additions */
 typedef struct _cell cell;                /* position on a board */
 struct _cell {
   int row;                                /* vertical position,   0 is top */
@@ -43,6 +46,9 @@ cell me(boardp b);                        /* position of ME in map */
 cell them(boardp b);                      /* position of THEM in map */
 char tile(boardp b, cell c);              /* what's on the board at position */
 void commit_move(int direction);          /* output move to referee */
+
+/* sam's additions */
+
 int valid_move(boardp b, cell to_loc);    /* returns true if move to open space */
 int distance_between_cells(cell x, cell y);
 
